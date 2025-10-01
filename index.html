@@ -36,25 +36,94 @@
     <div id="print-container"></div>
 
     <script>
-        let scheduleTemplate = {};
-        let scheduleObjectives = {};
-        let scheduleWeeks = [];
+        // --- GLOBAL DEĞİŞKENLER ---
+        let finalSchedule = {}; // Tüm haftaların birleştirilmiş programı bu değişkende tutulacak.
         let currentWeekIndex = 0;
         let currentDayId = 'pazartesi';
         let isWeekViewActive = false;
-        
         const dayOrder = { pazartesi: "Pazartesi", sali: "Salı", carsamba: "Çarşamba", persembe: "Perşembe", cuma: "Cuma" };
 
-        const weekMenu = document.getElementById('week-menu'), dayNav = document.getElementById('day-nav'),
-            dayViewContainer = document.getElementById('day-view-container'), weekViewContainer = document.getElementById('week-view-container'),
-            weekTitleDisplay = document.getElementById('week-title-display'), dateDisplay = document.getElementById('date-display'),
-            prevWeekBtn = document.getElementById('prev-week-btn'), nextWeekBtn = document.getElementById('next-week-btn');
+        // --- HTML ELEMENTLERİ ---
+        const weekMenu = document.getElementById('week-menu'),
+            dayNav = document.getElementById('day-nav'),
+            dayViewContainer = document.getElementById('day-view-container'),
+            weekViewContainer = document.getElementById('week-view-container'),
+            weekTitleDisplay = document.getElementById('week-title-display'),
+            dateDisplay = document.getElementById('date-display'),
+            prevWeekBtn = document.getElementById('prev-week-btn'),
+            nextWeekBtn = document.getElementById('next-week-btn');
 
+        // --- NAVİGASYON FONKSİYONLARI ---
         function openNav() { document.getElementById("mySidenav").style.width = "280px"; }
         function closeNav() { document.getElementById("mySidenav").style.width = "0"; }
+
+        // --- ANA VERİ İŞLEME VE GÖRÜNTÜLEME FONKSİYONLARI ---
+
+        // Sayfa yüklendiğinde çalışacak ana fonksiyon
+        async function initializeSchedule() {
+            try {
+                // 1. Üç JSON dosyasını aynı anda yükle
+                const [timetableRes, curriculumRes, weeksRes] = await Promise.all([
+                    fetch('ders-programi.json'),
+                    fetch('kazanimlar.json'),
+                    fetch('haftalar.json')
+                ]);
+
+                const timetable = await timetableRes.json();
+                const curriculum = await curriculumRes.json();
+                const weeksData = await weeksRes.json();
+                
+                // 2. Ders sayaçlarını başlat (Hangi dersten kaçıncı kazanıma gelindiğini takip etmek için)
+                const lessonCounters = {};
+                for (const subject in curriculum) {
+                    lessonCounters[subject] = 0;
+                }
+
+                // 3. Haftaları ve dersleri birleştirerek 'finalSchedule' nesnesini oluştur
+                weeksData.forEach((week, index) => {
+                    const weekKey = `week${index + 1}`;
+                    finalSchedule[weekKey] = {
+                        name: week.name,
+                        dates: week.dates,
+                        days: {}
+                    };
+
+                    for (const day in timetable) {
+                        finalSchedule[weekKey].days[day] = [];
+                        timetable[day].forEach((lessonName, lessonIndex) => {
+                            let objective = "Kazanım veya etkinlik belirtilmemiş.";
+                            if (curriculum[lessonName] && lessonCounters[lessonName] < curriculum[lessonName].length) {
+                                objective = curriculum[lessonName][lessonCounters[lessonName]];
+                                lessonCounters[lessonName]++;
+                            }
+                            finalSchedule[weekKey].days[day].push({
+                                time: `${lessonIndex + 1}. Ders`,
+                                name: lessonName,
+                                objective: objective
+                            });
+                        });
+                    }
+                });
+                
+                // 4. Arayüzü oluştur ve ilk haftayı/günü göster
+                populateSideNavMenu(weeksData);
+                populateDayNav(timetable);
+
+                const target = findCurrentWeekAndDay(weeksData);
+                currentDayId = target.dayId;
+                displayWeek(target.weekIndex);
+
+            } catch (error) {
+                console.error('Veri dosyaları yüklenirken bir hata oluştu:', error);
+                weekTitleDisplay.textContent = "Hata!";
+                dateDisplay.textContent = "Gerekli JSON dosyaları (ders-programi, kazanimlar, haftalar) yüklenemedi.";
+            }
+        }
         
-        function populateWeekMenu() {
-            scheduleWeeks.forEach((week, index) => {
+        // Yan menüdeki hafta listesini oluşturur
+        function populateSideNavMenu(weeksData) {
+            weekMenu.innerHTML = '';
+            weeksData.forEach((week, index) => {
                 const link = document.createElement('a');
                 link.href = "javascript:void(0)";
                 link.textContent = week.name;
@@ -64,16 +133,31 @@
             });
         }
         
+        // Üstteki gün navigasyonunu oluşturur (Pzt, Sal, ...)
+        function populateDayNav(timetable) {
+            dayNav.innerHTML = '';
+            const dayNames = { pazartesi: "Pzt", sali: "Sal", carsamba: "Çar", persembe: "Per", cuma: "Cum" };
+            for(const dayId in dayOrder) {
+                 const button = document.createElement('button');
+                 button.textContent = dayNames[dayId]; 
+                 button.dataset.day = dayId;
+                 button.onclick = () => displayDay(dayId); 
+                 dayNav.appendChild(button);
+            }
+        }
+
+        // Belirli bir haftayı görüntüler
         function displayWeek(weekIndex) {
             currentWeekIndex = weekIndex;
-            const week = scheduleWeeks[weekIndex];
+            const weekKey = `week${weekIndex + 1}`;
+            const weekData = finalSchedule[weekKey];
             
-            weekTitleDisplay.textContent = week.name;
-            dateDisplay.textContent = week.dates;
+            weekTitleDisplay.textContent = weekData.name;
+            dateDisplay.textContent = weekData.dates;
             document.querySelectorAll('#week-menu a').forEach(a => a.classList.toggle('active', parseInt(a.dataset.weekIndex) === weekIndex));
             
             prevWeekBtn.disabled = weekIndex === 0;
-            nextWeekBtn.disabled = weekIndex === scheduleWeeks.length - 1;
+            nextWeekBtn.disabled = weekIndex === Object.keys(finalSchedule).length - 1;
 
             if (isWeekViewActive) {
                 renderWeekView();
@@ -82,46 +166,48 @@
             }
         }
 
-        function showPreviousWeek() { if (currentWeekIndex > 0) displayWeek(currentWeekIndex - 1); }
-        function showNextWeek() { if (currentWeekIndex < scheduleWeeks.length - 1) displayWeek(currentWeekIndex + 1); }
-
+        // Haftalık görünümde belirli bir günü render eder
         function displayDay(dayId) {
             currentDayId = dayId;
             dayViewContainer.innerHTML = '';
-            const dayTemplate = scheduleTemplate[dayId];
-            if (!dayTemplate) return;
+            const weekKey = `week${currentWeekIndex + 1}`;
+            const lessons = finalSchedule[weekKey]?.days[dayId] || [];
 
-            dayTemplate.forEach(lessonSlot => {
-                const objective = scheduleObjectives[lessonSlot.id]?.[currentWeekIndex] || "Kazanım belirtilmemiş.";
+            lessons.forEach(lesson => {
                 const card = document.createElement('div');
                 card.className = 'schedule-card';
-                const bodyClass = objective.includes("belirtilmemiş") ? 'card-body empty' : 'card-body';
-                card.innerHTML = `<div class="card-header"><span class="lesson-name">${lessonSlot.name}</span><span class="lesson-time">${lessonSlot.time}</span></div><div class="${bodyClass}">${objective}</div>`;
+                const bodyClass = lesson.objective.includes("belirtilmemiş") ? 'card-body empty' : 'card-body';
+                card.innerHTML = `<div class="card-header"><span class="lesson-name">${lesson.name}</span><span class="lesson-time">${lesson.time}</span></div><div class="${bodyClass}">${lesson.objective}</div>`;
                 dayViewContainer.appendChild(card);
             });
             document.querySelectorAll('#day-nav button').forEach(btn => btn.classList.toggle('active', btn.dataset.day === dayId));
         }
 
+        // Tüm haftayı sütunlar halinde render eder
         function renderWeekView() {
             weekViewContainer.innerHTML = '';
-            for (const dayId in dayOrder) {
-                const dayTemplate = scheduleTemplate[dayId];
-                if (!dayTemplate) continue;
+            const weekKey = `week${currentWeekIndex + 1}`;
+            const weekData = finalSchedule[weekKey];
 
+            for (const dayId in dayOrder) {
                 const column = document.createElement('div');
                 column.className = 'week-view-day-column';
                 let lessonsHTML = `<h3 class="week-view-day-title">${dayOrder[dayId]}</h3>`;
                 
-                dayTemplate.forEach(lessonSlot => {
-                    const objective = scheduleObjectives[lessonSlot.id]?.[currentWeekIndex] || "Kazanım belirtilmemiş.";
-                    const bodyClass = objective.includes("belirtilmemiş") ? 'card-body empty' : 'card-body';
-                    lessonsHTML += `<div class="schedule-card"><div class="card-header"><span class="lesson-name">${lessonSlot.name}</span><span class="lesson-time">${lessonSlot.time}</span></div><div class="${bodyClass}">${objective}</div></div>`;
+                const lessons = weekData.days[dayId] || [];
+                lessons.forEach(lesson => {
+                    const bodyClass = lesson.objective.includes("belirtilmemiş") ? 'card-body empty' : 'card-body';
+                    lessonsHTML += `<div class="schedule-card"><div class="card-header"><span class="lesson-name">${lesson.name}</span><span class="lesson-time">${lesson.time}</span></div><div class="${bodyClass}">${lesson.objective}</div></div>`;
                 });
                 column.innerHTML = lessonsHTML;
                 weekViewContainer.appendChild(column);
             }
         }
         
+        // --- YARDIMCI FONKSİYONLAR ---
+        function showPreviousWeek() { if (currentWeekIndex > 0) displayWeek(currentWeekIndex - 1); }
+        function showNextWeek() { if (currentWeekIndex < Object.keys(finalSchedule).length - 1) displayWeek(currentWeekIndex + 1); }
+
         function toggleView() {
             isWeekViewActive = !isWeekViewActive;
             const toggleBtn = document.getElementById('toggle-view-btn');
@@ -143,23 +229,21 @@
                 displayDay(currentDayId);
             }
         }
-
+        
         function printSchedule() {
             const printContainer = document.getElementById('print-container');
-            const week = scheduleWeeks[currentWeekIndex];
+            const weekKey = `week${currentWeekIndex + 1}`;
+            const week = finalSchedule[weekKey];
             let pageHeaderHTML = `<div class="print-page-header"><h1>${week.name}</h1><p>${week.dates}</p></div>`;
             let daysHTML = '<div class="print-days-flex-container">';
 
             for (const dayId in dayOrder) {
                 daysHTML += `<div class="print-day-container"><h3 class="print-day-title">${dayOrder[dayId]}</h3>`;
-                const dayTemplate = scheduleTemplate[dayId];
-                if (dayTemplate) {
-                    dayTemplate.forEach(lessonSlot => {
-                        const objective = scheduleObjectives[lessonSlot.id]?.[currentWeekIndex] || "Kazanım belirtilmemiş.";
-                        const bodyClass = objective.includes("belirtilmemiş") ? 'print-card-body empty' : 'print-card-body';
-                        daysHTML += `<div class="print-card"><div class="print-card-header"><span class="print-lesson-name">${lessonSlot.name}</span><span>${lessonSlot.time}</span></div><div class="${bodyClass}">${objective}</div></div>`;
-                    });
-                }
+                const lessons = week.days[dayId] || [];
+                lessons.forEach(lesson => {
+                    const bodyClass = lesson.objective.includes("belirtilmemiş") ? 'print-card-body empty' : 'print-card-body';
+                    daysHTML += `<div class="print-card"><div class="print-card-header"><span class="print-lesson-name">${lesson.name}</span><span>${lesson.time}</span></div><div class="${bodyClass}">${lesson.objective}</div></div>`;
+                });
                 daysHTML += `</div>`;
             }
             daysHTML += '</div>';
@@ -172,7 +256,8 @@
         function findCurrentWeekAndDay(weeksData) {
             const today = new Date(); today.setHours(0, 0, 0, 0);
             const dayMap = ['pazar', 'pazartesi', 'sali', 'carsamba', 'persembe', 'cuma', 'cumartesi'];
-            const todayDayId = dayMap[today.getDay()] === 'pazar' || dayMap[today.getDay()] === 'cumartesi' ? 'pazartesi' : dayMap[today.getDay()];
+            let todayDayId = dayMap[today.getDay()];
+            if (todayDayId === 'pazar' || todayDayId === 'cumartesi') { todayDayId = 'pazartesi'; }
 
             for(let i = 0; i < weeksData.length; i++) {
                 const week = weeksData[i];
@@ -181,11 +266,8 @@
                 
                 const endPart = dateParts[1].split(' ');
                 const year = endPart[endPart.length - 1];
-                
                 let startPart = dateParts[0].split(' ');
-                if (startPart.length === 2) {
-                    startPart.push(year);
-                }
+                if (startPart.length === 2) { startPart.push(year); }
 
                 const startDate = parseTurkishDate(startPart.join(' '));
                 const endDate = parseTurkishDate(dateParts[1]);
@@ -197,35 +279,8 @@
             return { weekIndex: 0, dayId: 'pazartesi' };
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            Promise.all([
-                fetch('template.json').then(res => res.json()),
-                fetch('objectives.json').then(res => res.json())
-            ])
-            .then(([templateData, objectivesData]) => {
-                scheduleTemplate = templateData.template;
-                scheduleObjectives = objectivesData.objectives;
-                scheduleWeeks = objectivesData.weeks;
-                
-                populateWeekMenu();
-                
-                const dayNames = { pazartesi: "Pzt", sali: "Sal", carsamba: "Çar", persembe: "Per", cuma: "Cum" };
-                for(const dayId in scheduleTemplate) {
-                     const button = document.createElement('button');
-                    button.textContent = dayNames[dayId]; button.dataset.day = dayId;
-                    button.onclick = () => displayDay(dayId); dayNav.appendChild(button);
-                }
-
-                const target = findCurrentWeekAndDay(scheduleWeeks);
-                currentDayId = target.dayId;
-                displayWeek(target.weekIndex);
-            })
-            .catch(error => {
-                console.error('Veri dosyaları yüklenirken bir hata oluştu:', error);
-                weekTitleDisplay.textContent = "Hata!";
-                dateDisplay.textContent = "template.json veya objectives.json yüklenemedi.";
-            });
-        });
+        // --- SAYFA YÜKLENDİĞİNDE BAŞLAT ---
+        document.addEventListener('DOMContentLoaded', initializeSchedule);
     </script>
 </body>
 </html>
