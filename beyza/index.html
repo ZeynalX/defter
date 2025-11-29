@@ -31,8 +31,12 @@
 
             --font-size-body: clamp(0.85rem, 1.5vw, 1rem);
             --font-size-small: clamp(0.7rem, 1.2vw, 0.8rem);
-            --font-size-lesson-name: clamp(0.8rem, 2vw, 0.9rem);
-            --font-size-day-title: clamp(1rem, 3vw, 1.3rem);
+            
+            /* GÜNCELLEME: Ders isimleri %40 küçültüldü (0.5rem - 0.6rem arası) */
+            --font-size-lesson-name: clamp(0.5rem, 1.2vw, 0.6rem);
+            
+            /* GÜNCELLEME: Gün Başlıkları %40 küçültüldü (0.6rem - 0.8rem arası) */
+            --font-size-day-title: clamp(0.6rem, 1.8vw, 0.8rem);
 
             --spacing-base: clamp(8px, 1.5vw, 12px);
             --spacing-small: clamp(4px, 1vw, 6px);
@@ -53,7 +57,6 @@
 
         header { padding: var(--spacing-small) var(--spacing-base); position: sticky; top: 4px; z-index: 1000; margin: 4px; background-color: var(--papyrus-bg-color-dark); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 5px var(--shadow-color); text-align: center; }
         
-        /* GÜNCELLEME: Header düzeni değiştirildi */
         .header-top { display: flex; align-items: center; justify-content: space-between; position: relative; }
         
         .week-navigation { 
@@ -62,10 +65,9 @@
             gap: 5px; 
             flex-grow: 1; 
             justify-content: center; 
-            position: relative; /* Dropdown için gerekli */
+            position: relative; 
         }
         
-        /* GÜNCELLEME: Başlık tıklanabilir yapıldı */
         header h1 { 
             font-family: 'Cinzel Decorative', cursive; 
             font-size: clamp(0.9rem, 2.5vw, 1.1rem); 
@@ -86,10 +88,27 @@
         header h2 { font-family: 'Crimson Pro', serif; font-size: var(--font-size-small); font-weight: 400; opacity: 0.8; margin-top: 2px; color: var(--text-secondary-color); }
         
         .day-nav { display: flex; justify-content: space-around; padding: var(--spacing-tiny); position: sticky; top: 65px; z-index: 999; margin: 4px; gap: 4px; background-color: var(--papyrus-bg-color-dark); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 5px var(--shadow-color); }
-        .day-nav button { font-family: 'Crimson Pro', serif; padding: var(--spacing-small); font-size: var(--font-size-body); font-weight: 500; cursor: pointer; border: none; border-radius: 6px; background-color: transparent; color: var(--text-secondary-color); transition: all 0.3s ease; flex-grow: 1; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+        
+        .day-nav button { 
+            font-family: 'Crimson Pro', serif; 
+            padding: var(--spacing-small); 
+            /* GÜNCELLEME: Gün butonları yazı boyutu %40 küçültüldü */
+            font-size: clamp(0.55rem, 1vw, 0.65rem);
+            font-weight: 500; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 6px; 
+            background-color: transparent; 
+            color: var(--text-secondary-color); 
+            transition: all 0.3s ease; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            line-height: 1.2; 
+        }
         .day-nav button.active { background-color: var(--accent-color); color: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
         
-        /* GÜNCELLEME: Öğretmen adı stili */
         .user-name { 
             font-family: 'Cinzel Decorative', cursive; 
             font-size: clamp(0.9rem, 1.5vw, 1.1rem); 
@@ -99,7 +118,6 @@
             margin-right: 10px;
         }
 
-        /* YENİ: Hafta Seçim Listesi (Dropdown) */
         .week-dropdown-content {
             display: none;
             position: absolute;
@@ -161,11 +179,10 @@
             padding: var(--spacing-small) var(--spacing-base);
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            align-items: center; /* Sola hizala */
+            align-items: center; 
             background-color: rgba(0,0,0,0.03);
-            gap: 8px; /* Numara ve isim arası boşluk */
+            gap: 8px; 
         }
-        /* GÜNCELLEME: Boş gövdeli kartlarda alt çizgiyi kaldır */
         .schedule-card.no-body .card-header { border-bottom: none; border-radius: 8px; }
 
         .lesson-name {
@@ -175,7 +192,7 @@
             color: var(--text-primary-color);
             text-transform: capitalize;
         }
-        /* GÜNCELLEME: Ders saati/numarası stili */
+        
         .lesson-time {
             font-size: var(--font-size-small);
             padding: 2px 6px;
@@ -191,16 +208,14 @@
             color: var(--text-primary-color);
             flex-grow: 1;
         }
-        /* .card-body.empty stili kaldırıldı çünkü artık DOM'a eklenmiyor */
 
-        .sidenav { height: 100%; width: 0; position: fixed; z-index: 1001; top: 0; right: 0; /* Sağdan açılsın */ overflow-x: hidden; transition: 0.4s ease-out; padding-top: 60px; background-color: var(--papyrus-bg-color-dark); border-left: 2px solid var(--border-color); box-shadow: -2px 0 10px var(--shadow-color); } 
+        .sidenav { height: 100%; width: 0; position: fixed; z-index: 1001; top: 0; right: 0; overflow-x: hidden; transition: 0.4s ease-out; padding-top: 60px; background-color: var(--papyrus-bg-color-dark); border-left: 2px solid var(--border-color); box-shadow: -2px 0 10px var(--shadow-color); } 
         .sidenav a { padding: 12px 20px; text-decoration: none; font-size: 1.1rem; color: var(--text-secondary-color); display: block; transition: 0.3s; border-bottom: 1px dashed rgba(0,0,0,0.1); } .sidenav a:hover { color: var(--text-primary-color); background-color: var(--active-bg-color); } .sidenav a.active { color: var(--accent-color); font-weight: 700; background-color: var(--active-bg-color); } 
         .sidenav .closebtn { position: absolute; top: 10px; right: 25px; font-size: 36px; color: var(--text-primary-color); }
         
         .menu-icon, .nav-button { font-size: 24px; cursor: pointer; background: none; border: none; color: var(--text-primary-color); padding: 2px; border-radius: 50%; transition: background 0.3s; } .nav-button:disabled { color: rgba(0,0,0,0.2); cursor: not-allowed; }
         .action-buttons-container { position: fixed; bottom: 20px; right: 20px; z-index: 100; display: flex; gap: 15px; } .action-button { width: 60px; height: 60px; background-color: var(--accent-color); color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; transition: all 0.3s ease; }
 
-        /* Takvim Modalı Stilleri */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { background: var(--papyrus-bg-color-light); background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); padding: 20px; border-radius: 10px; border: 2px solid var(--border-color); box-shadow: 0 5px 20px rgba(0,0,0,0.3); width: 90%; max-width: 600px; position: relative; }
         .modal-header { display: flex; justify-content: center; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px; position: relative; }
@@ -235,7 +250,23 @@
         .calendar-footer-info li { margin-bottom: 4px; }
         .calendar-footer-info strong { display: inline-block; min-width: 60px; }
 
-        @media print { body { padding-bottom: 0; font-size: 9pt; background-image: none; } header, .day-nav, .sidenav, .action-buttons-container, #week-view-container, #day-view-container, .modal-overlay { display: none !important; } #print-container { display: block !important; } .print-page-header { text-align: left; margin-bottom: 8px; } .print-page-header h1 { font-size: 11pt; } .print-page-header p { font-size: 9pt; } .print-days-flex-container { display: flex !important; flex-direction: row; gap: 8px; } .print-day-container { flex: 1; } .print-day-title { font-size: 10pt; } .print-card { border: 1px solid #ccc; margin-bottom: 5px; padding: 5px; } .print-card-header { font-size: 8pt; } .print-card-body { font-size: 8pt; } } #print-container { display: none; }
+        @media print { 
+            body { padding-bottom: 0; font-size: 9pt; background-image: none; } 
+            header, .day-nav, .sidenav, .action-buttons-container, #week-view-container, #day-view-container, .modal-overlay { display: none !important; } 
+            #print-container { display: block !important; } 
+            .print-page-header { text-align: left; margin-bottom: 8px; } 
+            .print-page-header h1 { font-size: 11pt; } 
+            .print-page-header p { font-size: 9pt; } 
+            .print-days-flex-container { display: flex !important; flex-direction: row; gap: 8px; } 
+            .print-day-container { flex: 1; } 
+            /* GÜNCELLEME: Baskı görünümünde gün başlığı küçültüldü */
+            .print-day-title { font-size: 6pt; } 
+            .print-card { border: 1px solid #ccc; margin-bottom: 5px; padding: 5px; } 
+            /* GÜNCELLEME: Baskı görünümünde ders adı küçültüldü */
+            .print-card-header { font-size: 5pt; } 
+            .print-card-body { font-size: 8pt; } 
+        } 
+        #print-container { display: none; }
 
         @media (max-width: 480px) and (orientation: portrait) {
             .modal-content { padding: 10px; width: 95%; }
@@ -317,7 +348,7 @@
             dateDisplay = document.getElementById('date-display'),
             prevWeekBtn = document.getElementById('prev-week-btn'),
             nextWeekBtn = document.getElementById('next-week-btn'),
-            weekDropdownContent = document.getElementById('week-dropdown-content'); // YENİ
+            weekDropdownContent = document.getElementById('week-dropdown-content');
 
         let modalCurrentDate = new Date(2025, 8, 1); 
         const calendarModal = document.getElementById('calendar-modal');
@@ -331,7 +362,6 @@
         const TR_DAY_NAMES_SHORT = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
         const TR_DAY_ID_MAP = ['pazar', 'pazartesi', 'sali', 'carsamba', 'persembe', 'cuma', 'cumartesi'];
 
-        // (Akademik takvim değişkenleri aynen kaldı - kodun kısalığı için tekrar yazmıyorum, olduğu gibi çalışacak)
         const academicCalendarRanges = [
             { start: "2025-11-10", end: "2025-11-14", type: "break", label: "I. Dönem Ara Tatil" },
             { start: "2026-01-19", end: "2026-01-30", type: "break", label: "Yarıyıl Tatili" },
@@ -427,12 +457,10 @@
         function openNav() { document.getElementById("mySidenav").style.width = "280px"; }
         function closeNav() { document.getElementById("mySidenav").style.width = "0"; }
 
-        // YENİ: Dropdown'u aç/kapa
         function toggleWeekDropdown() {
             weekDropdownContent.classList.toggle('show');
         }
 
-        // YENİ: Dropdown dışına tıklanınca kapat
         window.onclick = function(event) {
             if (!event.target.matches('#week-title-display')) {
                 if (weekDropdownContent.classList.contains('show')) {
@@ -472,7 +500,7 @@
                 });
 
                 populateSideNavMenu(allWeeksData);
-                populateWeekDropdown(allWeeksData); // YENİ
+                populateWeekDropdown(allWeeksData);
                 if (window.innerWidth > window.innerHeight) { isWeekViewActive = true; }
                 const target = findCurrentWeekAndDay(allWeeksData);
                 currentDayId = target.dayId;
@@ -513,7 +541,6 @@
             });
         }
 
-        // YENİ: Dropdown Menüyü Doldur
         function populateWeekDropdown(weeksData) {
             weekDropdownContent.innerHTML = '';
             weeksData.forEach((week, index) => {
@@ -525,16 +552,13 @@
             });
         }
 
-        // GÜNCELLEME: Gün butonlarına tarih ekleme mantığı için parametre eklendi
         function populateDayNav(weekDatesString) {
             dayNav.innerHTML = '';
             const dayNames = { pazartesi: "Pzt", sali: "Sal", carsamba: "Çar", persembe: "Per", cuma: "Cum" };
             
-            // Hafta tarihini ayrıştır ve Pazartesi gününü bul
             let startDate = null;
             if (weekDatesString) {
                 const startStr = weekDatesString.split(' - ')[0];
-                // Yılı bulmak için string'in sonuna bak (Haftalar JSON'unda yıl bazen sonda oluyor)
                 const fullDateStr = weekDatesString.split(' - ')[1];
                 const year = fullDateStr.split(' ').pop();
                 
@@ -574,20 +598,17 @@
             weekTitleDisplay.textContent = weekData.name;
             dateDisplay.textContent = weekData.dates;
 
-            // Dropdown aktif sınıfını güncelle
             const dropdownLinks = weekDropdownContent.querySelectorAll('a');
             dropdownLinks.forEach((link, idx) => {
                 if (idx === weekIndex) link.classList.add('active');
                 else link.classList.remove('active');
             });
             
-            // Yan menü aktif sınıfını güncelle
             document.querySelectorAll('#week-menu a').forEach(a => a.classList.toggle('active', parseInt(a.dataset.weekIndex) === weekIndex));
 
             prevWeekBtn.disabled = weekIndex === 0;
             nextWeekBtn.disabled = weekIndex === allWeeksData.length - 1;
 
-            // GÜNCELLEME: Tarihli gün butonlarını oluştur
             populateDayNav(weekData.dates);
 
             if (isWeekViewActive) {
@@ -615,11 +636,9 @@
                 const card = document.createElement('div');
                 const isObjectiveEmpty = lesson.objective.includes("belirtilmemiş");
                 
-                // GÜNCELLEME: Eğer kazanım boşsa 'no-body' sınıfı ekle
                 card.className = isObjectiveEmpty ? 'schedule-card no-body' : 'schedule-card';
 
-                // GÜNCELLEME: Ders numarası ve adı yer değiştirdi
-                const lessonNum = lesson.time.replace('. Ders', '.'); // "1. Ders" -> "1."
+                const lessonNum = lesson.time.replace('. Ders', '.'); 
                 
                 let htmlContent = `
                     <div class="card-header">
@@ -627,7 +646,6 @@
                         <span class="lesson-name">${lesson.name}</span>
                     </div>`;
                 
-                // GÜNCELLEME: Kazanım boşsa body kısmını hiç ekleme
                 if (!isObjectiveEmpty) {
                     htmlContent += `<div class="card-body">${lesson.objective}</div>`;
                 }
@@ -644,7 +662,6 @@
             const weekKey = `week${currentWeekIndex + 1}`;
             const weekData = finalSchedule[weekKey];
             
-            // Hafta görünümünde tarihleri başlığa ekle
             let startDate = null;
             if (weekData.dates) {
                  const startStr = weekData.dates.split(' - ')[0];
