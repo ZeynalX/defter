@@ -28,7 +28,7 @@
             --text-secondary: #636e72;
             --accent-color: #6d4c41;
             
-            /* Nokta Renkleri (Parlak Jelibon Tarzı) */
+            /* Nokta Renkleri */
             --dot-holiday: #ff7675;
             --dot-special: #a29bfe;
             --dot-religious: #55efc4;
@@ -45,7 +45,6 @@
             font-family: 'Crimson Pro', serif;
             color: var(--text-primary);
             background-color: var(--bg-color);
-            /* Arka plana hafif bir desen ekleyelim ki cam etkisi belli olsun */
             background-image: 
                 radial-gradient(circle at 10% 20%, rgba(216, 179, 255, 0.4) 0%, transparent 20%),
                 radial-gradient(circle at 90% 80%, rgba(179, 229, 255, 0.4) 0%, transparent 20%);
@@ -59,20 +58,16 @@
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
-            
-            /* Kenarlık Işıklandırması */
             border-top: var(--glass-border-top);
             border-left: var(--glass-border-top);
             border-right: var(--glass-border-bottom);
             border-bottom: var(--glass-border-bottom);
-            
             box-shadow: var(--glass-shadow);
             border-radius: var(--radius-xl);
             position: relative;
-            overflow: hidden; /* Taşmaları kes */
+            overflow: hidden; 
         }
         
-        /* Işıltı Efekti (Camın üzerindeki yansıma) */
         .glass-panel::before {
             content: '';
             position: absolute;
@@ -118,7 +113,6 @@
             align-items: center;
             gap: 4px;
             padding: 6px 12px;
-            /* Buton benzeri cam */
             background: rgba(255,255,255,0.3);
             border: 1px solid rgba(255,255,255,0.5);
             box-shadow: inset 0 1px 4px rgba(255,255,255,0.8);
@@ -143,12 +137,11 @@
             transition: 0.2s;
         }
         .nav-button:hover { background: white; transform: translateY(-1px); }
-        .nav-button:active { transform: translateY(1px); box-shadow: none; }
         .nav-button i { font-size: 18px; }
 
         header h2 { font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; margin-left: 5px; position: relative; z-index: 2; }
 
-        /* GÜN SEÇİM BAR - 3B Butonlar */
+        /* GÜN SEÇİM BAR */
         .day-nav {
             display: flex;
             justify-content: space-between;
@@ -169,23 +162,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            
-            /* Pasif Durumda Cam Düğme */
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: none;
             color: var(--text-primary);
         }
         .day-nav button span:first-child { font-weight: 700; font-size: 0.95rem; }
         .day-nav button span:last-child { font-size: 0.6rem; color: var(--text-secondary); margin-top: 2px; text-transform: uppercase; font-weight: 600; }
         
-        /* Aktif Durum: Basılı Hissi veya Kabartma */
         .day-nav button.active {
             background: linear-gradient(145deg, #ffffff, #e6e6e6);
             border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 
-                0 4px 10px rgba(0,0,0,0.1),
-                inset 0 1px 0 rgba(255,255,255,1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,1);
             color: var(--accent-color);
             transform: translateY(-2px);
         }
@@ -193,11 +180,9 @@
 
         .main-container { padding: 0 12px; max-width: 1000px; margin: 0 auto; }
 
-        /* KARTLAR - Kalın Cam Bloklar */
+        /* KARTLAR */
         .schedule-card {
             margin-bottom: 12px;
-            
-            /* Özel 3B Cam Stili */
             background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%);
             backdrop-filter: blur(15px);
             border-top: 1px solid rgba(255,255,255,0.9);
@@ -205,12 +190,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.2);
             border-right: 1px solid rgba(255,255,255,0.2);
             border-radius: var(--radius-md);
-            
-            /* Kalınlık Hissi Veren Gölge */
-            box-shadow: 
-                0 6px 15px rgba(0,0,0,0.05),
-                inset 0 0 20px rgba(255,255,255,0.5); /* İç parlama */
-                
+            box-shadow: 0 6px 15px rgba(0,0,0,0.05), inset 0 0 20px rgba(255,255,255,0.5);
             display: flex;
             flex-direction: column;
             transition: transform 0.2s;
@@ -223,7 +203,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.3); /* İnce ayırıcı */
+            border-bottom: 1px solid rgba(255,255,255,0.3);
         }
         .schedule-card.no-body .card-header { border-bottom: none; width: 100%; }
 
@@ -231,10 +211,8 @@
             font-size: 0.7rem;
             padding: 4px 8px;
             border-radius: 8px;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); /* Metalik beyaz */
-            box-shadow: 
-                inset 1px 1px 2px rgba(255,255,255,1),
-                0 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,1), 0 2px 4px rgba(0,0,0,0.1);
             color: var(--accent-color);
             font-weight: 800;
             min-width: 24px;
@@ -253,11 +231,11 @@
             line-height: 1.5;
             color: var(--text-primary);
             font-size: 0.85rem;
-            background: rgba(255,255,255,0.1); /* Hafif ton farkı */
+            background: rgba(255,255,255,0.1);
             border-radius: 0 0 var(--radius-md) var(--radius-md);
         }
 
-        /* DROPDOWN - Buzlu Cam Menü */
+        /* DROPDOWN */
         .week-dropdown-content {
             display: none;
             position: absolute;
@@ -296,7 +274,7 @@
             box-shadow: 0 4px 10px rgba(141, 110, 99, 0.3);
         }
 
-        /* ACTION BUTTONS - Cam Küreler */
+        /* ACTION BUTTONS */
         .action-buttons-container {
             position: fixed;
             bottom: 25px;
@@ -308,32 +286,23 @@
         .action-button {
             width: 54px;
             height: 54px;
-            
-            /* Cam Küre Efekti */
             background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.6));
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255,255,255,0.8);
-            
             color: var(--accent-color);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            
-            /* Derin Gölge */
-            box-shadow: 
-                0 10px 20px rgba(0,0,0,0.15),
-                inset -2px -2px 6px rgba(0,0,0,0.05);
-                
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15), inset -2px -2px 6px rgba(0,0,0,0.05);
             cursor: pointer;
             transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .action-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
 
-        /* TAKVİM MODALI - Kalın Cam Levha */
+        /* TAKVİM MODALI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(230, 230, 230, 0.6); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-        
         .modal-content { 
             background: rgba(255,255,255,0.85); 
             backdrop-filter: blur(30px);
@@ -369,19 +338,17 @@
             align-items: center; 
             justify-content: center; 
             cursor: pointer; 
-            border-radius: 12px; /* Karemsi yuvarlak */
+            border-radius: 12px;
             margin: 4px; 
             transition: 0.2s; 
             position: relative;
-            
-            /* Hafif 3B kiremit etkisi */
             background: rgba(255,255,255,0.3);
             border: 1px solid rgba(255,255,255,0.4);
         }
         
         .day-number { font-size: 0.95rem; font-weight: 600; z-index: 2; }
         .event-dots-container { display: flex; gap: 3px; position: absolute; bottom: 6px; justify-content: center; }
-        .event-dot { width: 5px; height: 5px; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); } /* Jelibon nokta */
+        .event-dot { width: 5px; height: 5px; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .dot-holiday { background-color: var(--dot-holiday); }
         .dot-special { background-color: var(--dot-special); }
         .dot-religious { background-color: var(--dot-religious); }
@@ -461,7 +428,7 @@
     </div>
 
     <script>
-        // --- DEĞİŞKENLER VE TEMEL FONKSİYONLAR (Aynı) ---
+        // --- GLOBAL DEĞİŞKENLER ---
         let finalSchedule = {};
         let currentWeekIndex = 0;
         let currentDayId = 'pazartesi';
@@ -491,7 +458,7 @@
         const calendarGridBody = document.getElementById('calendar-grid-body');
         const calendarEventsList = document.getElementById('calendar-events-list');
 
-        // --- DATA ---
+        // Takvim Verileri
         const academicCalendarRanges = [
             { start: "2025-11-10", end: "2025-11-14", type: "break", label: "I. Dönem Ara Tatil" },
             { start: "2026-01-19", end: "2026-01-30", type: "break", label: "Yarıyıl Tatili" },
@@ -611,9 +578,14 @@
 
                 document.getElementById('modal-prev-month').addEventListener('click', () => { modalCurrentDate.setMonth(modalCurrentDate.getMonth() - 1); renderDynamicCalendar(); });
                 document.getElementById('modal-next-month').addEventListener('click', () => { modalCurrentDate.setMonth(modalCurrentDate.getMonth() + 1); renderDynamicCalendar(); });
+                calendarModal.addEventListener('click', (e) => { if (e.target === calendarModal) { closeCalendarModal(); } });
                 renderDynamicCalendar();
 
-            } catch (error) { console.error(error); weekTitleDisplay.textContent = "Hata!"; dateDisplay.textContent = "Veriler yüklenemedi."; }
+            } catch (error) { 
+                console.error(error); 
+                weekTitleDisplay.textContent = "Hata!"; 
+                dateDisplay.innerHTML = "Veriler yüklenemedi.<br><small>JSON dosyalarına erişim engellendi. (CORS)</small>"; 
+            }
         }
 
         function populateWeekDropdown(weeksData) { weekDropdownContent.innerHTML = ''; weeksData.forEach((week, index) => { const link = document.createElement('a'); link.href = "javascript:void(0)"; link.textContent = week.name; link.onclick = () => { displayWeek(index); }; weekDropdownContent.appendChild(link); }); }
